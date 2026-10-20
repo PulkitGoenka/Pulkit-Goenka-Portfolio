@@ -1,8 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import axios from "axios";
-import { API } from "@/lib/api";
-import { DoodleStar } from "@/components/Doodles";
+import { DoodleStar } from "../components/Doodles";
+import { PROJECTS_DATA } from "../data/portfolioData";
 
 const ACCENTS = {
   cyan: "border-neon-cyan/60 text-neon-cyan",
@@ -11,10 +9,7 @@ const ACCENTS = {
 };
 
 export default function Projects() {
-  const { data: projects, isLoading, isError } = useQuery({
-    queryKey: ["projects"],
-    queryFn: async () => (await axios.get(`${API}/projects`)).data,
-  });
+  const projects = PROJECTS_DATA;
 
   return (
     <section id="projects" data-testid="projects-section" className="relative py-24 md:py-32">
@@ -29,18 +24,14 @@ export default function Projects() {
           </div>
         </div>
 
-        {isLoading && (
-          <p data-testid="projects-loading" className="mt-16 text-zinc-500 font-display text-2xl animate-blink">Loading projects…</p>
-        )}
-        {isError && (
-          <p data-testid="projects-error" className="mt-16 text-zinc-400">Couldn't load projects right now. Try refreshing in a bit.</p>
-        )}
-        {!isLoading && !isError && projects?.length === 0 && (
-          <p data-testid="projects-empty" className="mt-16 text-zinc-400 font-display text-2xl">Projects coming soon — check back!</p>
+        {projects.length === 0 && (
+          <p data-testid="projects-empty" className="mt-16 text-zinc-400 font-display text-2xl">
+            Projects coming soon — check back!
+          </p>
         )}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-14">
-          {projects?.map((project, i) => (
+          {projects.map((project, i) => (
             <motion.article
               key={project.id}
               data-testid={`project-card-${project.slug}`}

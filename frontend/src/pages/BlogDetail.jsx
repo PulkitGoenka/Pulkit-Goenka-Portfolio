@@ -1,9 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowLeft, Clock } from "lucide-react";
-import axios from "axios";
-import { API } from "@/lib/api";
+import { BLOGS_DATA } from "../data/portfolioData";
 
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
@@ -13,20 +11,9 @@ export default function BlogDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  const { data: post, isLoading, isError } = useQuery({
-    queryKey: ["blog", slug],
-    queryFn: async () => (await axios.get(`${API}/blog/${slug}`)).data,
-  });
+  const post = BLOGS_DATA.find((p) => p.slug === slug);
 
-  if (isLoading) {
-    return (
-      <section className="pt-36 pb-24 min-h-screen grid place-items-center">
-        <p data-testid="blog-detail-loading" className="text-zinc-500 font-display text-2xl animate-blink">Loading post…</p>
-      </section>
-    );
-  }
-
-  if (isError || !post) {
+  if (!post) {
     return (
       <section className="pt-36 pb-24 min-h-screen">
         <div className="max-w-3xl mx-auto px-6 text-center">

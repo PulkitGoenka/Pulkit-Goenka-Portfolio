@@ -1,19 +1,14 @@
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ArrowRight, Clock } from "lucide-react";
-import axios from "axios";
-import { API } from "@/lib/api";
+import { BLOGS_DATA } from "../data/portfolioData";
 
 function formatDate(iso) {
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 export default function Blog() {
-  const { data: posts, isLoading, isError } = useQuery({
-    queryKey: ["blog"],
-    queryFn: async () => (await axios.get(`${API}/blog`)).data,
-  });
+  const posts = BLOGS_DATA;
 
   return (
     <section data-testid="blog-page" className="pt-36 pb-24 md:pb-32 min-h-screen">
@@ -27,14 +22,14 @@ export default function Blog() {
           future me (and you) can find them.
         </p>
 
-        {isLoading && <p data-testid="blog-loading" className="mt-16 text-zinc-500 font-display text-2xl animate-blink">Loading posts…</p>}
-        {isError && <p data-testid="blog-error" className="mt-16 text-zinc-400">Couldn't load posts right now. Try refreshing in a bit.</p>}
-        {!isLoading && !isError && posts?.length === 0 && (
-          <p data-testid="blog-empty" className="mt-16 text-zinc-400 font-display text-2xl">No posts yet — new notes drop soon.</p>
+        {posts.length === 0 && (
+          <p data-testid="blog-empty" className="mt-16 text-zinc-400 font-display text-2xl">
+            No posts yet — new notes drop soon.
+          </p>
         )}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-14">
-          {posts?.map((post, i) => (
+          {posts.map((post, i) => (
             <motion.div
               key={post.id}
               initial={{ opacity: 0, y: 40 }}
